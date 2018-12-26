@@ -1,40 +1,43 @@
 import React, { Component } from "react";
+import "./WatchList.css";
 import WatchMovie from "./WatchMovie.js";
+import MovieBox from "./MovieBox.js";
 import $ from "jquery";
-import '../App.css';
 
 class WatchList extends Component {
+  state = { watchList: [] };
   constructor(props) {
     super(props);
-    this.state = {};
-    this.displayAll();
+    this.displayWatchlist = this.displayWatchlist.bind(this);
   }
-  displayAll() {
-    const urlString =
-      "https://api.themoviedb.org/3/discover/movie?api_key=de00ede0874461aa1c5f57086858497f";
-
-    $.ajax({
-      url: urlString,
-      success: searchResults => {
-        console.log("fetch data success");
-        const results = searchResults.results;
-        var movieBoxes = [];
-        results.forEach(movie => {
-          movie.poster = "https://image.tmdb.org/t/p/w185" + movie.poster_path;
-          // console.log(movie.poster_path);
-          const movieBox = <WatchMovie key={movie.id} movie={movie} />;
-          movieBoxes.push(movieBox);
-        });
-        this.setState({ rows: movieBoxes });
-      },
-      error: (xhr, status, err) => {
-        console.error("Failed to fetch data");
-      }
+  componentDidMount() {
+    this.displayWatchlist();
+  }
+  //display the movies that are in watchlist
+  displayWatchlist() {
+    console.log("in display watchlist");
+    var movieBoxes = [];
+    var watchlist = [];
+    var savedWatchlist = JSON.parse(localStorage.getItem("watchlist"));
+    if (savedWatchlist) {
+      watchlist = savedWatchlist;
+    }
+    watchlist.forEach(movie => {
+      const movieBox = (
+        <WatchMovie
+          displayWatchlist={this.displayWatchlist}
+          key={movie.id}
+          movie={movie}
+        />
+      );
+      movieBoxes.push(movieBox);
     });
+    this.setState({ rows: movieBoxes });
   }
+  //search movies by input keyword
   performSearch(searchTerm) {
     const urlString =
-      "https://api.themoviedb.org/3/search/movie?api_key=de00ede0874461aa1c5f57086858497f&query=" +
+      "https://api.themoviedb.org/3/search/movie?api_key=4ccda7a34189fcea2fc752a6ee339500&query=" +
       searchTerm;
 
     $.ajax({
@@ -45,8 +48,7 @@ class WatchList extends Component {
         var movieBoxes = [];
         results.forEach(movie => {
           movie.poster = "https://image.tmdb.org/t/p/w185" + movie.poster_path;
-          //console.log(movie.poster_path);
-          const movieBox = <WatchMovie key={movie.id} movie={movie} />;
+          const movieBox = <MovieBox key={movie.id} movie={movie} />;
           movieBoxes.push(movieBox);
         });
         this.setState({ rows: movieBoxes });
@@ -57,11 +59,9 @@ class WatchList extends Component {
     });
   }
   searchChangeHandler(event) {
-    //console.log(event.target.value);
     const searchTerm = event.target.value;
     if (searchTerm.trim() === "") {
-      //console.log("empty here");
-      this.displayAll();
+      this.displayWatchlist();
     } else {
       this.performSearch(searchTerm);
     }
@@ -69,29 +69,34 @@ class WatchList extends Component {
   render() {
     return (
       <div className="App">
-        <table className="titleBar">
-          <tbody>
-            <tr>
-              <td>My WatchList</td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="watchlist-title-box">
+          My Watchlist
+          <hr />
+        </div>
 
         <input
+          className="search-box"
           style={{
-            fontSize: 15,
+            fontSize: 20,
             display: "block",
-            width: "100%",
-            paddingTop: 8,
-            paddingBottom: 8
+            width: "95%",
+            marginTop: 30,
+            marginBottom: 20,
+            borderTop: 0,
+            borderLeft: 0,
+            borderRight: 0,
+            borderBottom: "0.3px solid #8091A5",
+            marginLeft: "30px",
+            backgroundColor: "#262d40",
+            color: "white"
           }}
           onChange={this.searchChangeHandler.bind(this)}
-          placeholder="Enter search term"
+          placeholder="Search..."
         />
         <div
           style={{
             position: "relative",
-            maxHeight: "550px",
+            height: "520px",
             overflowY: "scroll",
             overflowX: "hidden"
           }}

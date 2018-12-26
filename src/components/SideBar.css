@@ -1,3 +1,4 @@
+/* side navigation bar style */
 .sidenav {
   height: 100%;
   width: 100px;
@@ -5,13 +6,13 @@
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: #00cca3;
+  background-color: #50e3c2;
   overflow-x: hidden;
-  padding-top: 20px;
+  padding-top: 80px;
 }
 
 .sidenav a {
-  padding: 6px 8px 6px 16px;
+  padding: 6px 8px 0px 23px;
   text-decoration: none;
   font-size: 25px;
   color: #818181;
