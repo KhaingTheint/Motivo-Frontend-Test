@@ -35,16 +35,16 @@ class WatchMovie extends Component {
   };
 
   handleRemove(event) {
-    const id = event.target.id;
+    var id = this.props.movie.id;
     this.removeMovie(id);
   }
   // remove the movie from watchlist
   removeMovie(id) {
-    var savedWatchlist = JSON.parse(localStorage.getItem("watchlist"));
+    var savedWatchlist = JSON.parse(localStorage.getItem("watchlistItem"));
     savedWatchlist = savedWatchlist.filter(function(e) {
       return e.id !== id;
     });
-    localStorage.setItem("watchlist", JSON.stringify(savedWatchlist));
+    localStorage.setItem("watchlistItem", JSON.stringify(savedWatchlist));
 
     this.props.displayWatchlist();
   }
@@ -53,7 +53,7 @@ class WatchMovie extends Component {
     const urlString =
       "https://api.themoviedb.org/3/movie/" +
       this.props.movie.id +
-      "?api_key=4ccda7a34189fcea2fc752a6ee339500&append_to_response=credits";
+      "?api_key=de00ede0874461aa1c5f57086858497f&append_to_response=credits";
 
     $.ajax({
       url: urlString,
@@ -79,8 +79,13 @@ class WatchMovie extends Component {
           crew = crew.slice(0, 5);
         }
         cast.forEach(cast => {
-          cast.profile_path =
-            "https://image.tmdb.org/t/p/w185" + cast.profile_path;
+          if (cast.profile_path !== null) {
+            cast.profile_path =
+              "https://image.tmdb.org/t/p/w185" + cast.profile_path;
+          } else {
+            cast.profile_path =
+              "https://www.underconsideration.com/brandnew/archives/google_broken_image_00_b_logo_detail.gif";
+          }
         });
         this.setState({ detail: details });
         this.setState({ crew: crew });
@@ -95,7 +100,7 @@ class WatchMovie extends Component {
     const urlString =
       "https://api.themoviedb.org/3/movie/" +
       this.props.movie.id +
-      "/similar?api_key=4ccda7a34189fcea2fc752a6ee339500&language=en-US";
+      "/similar?api_key=de00ede0874461aa1c5f57086858497f&language=en-US";
 
     $.ajax({
       url: urlString,
@@ -109,8 +114,13 @@ class WatchMovie extends Component {
           this.setState({ relatedMovieTitle: "Related Movies" });
         }
         relatedMovies.forEach(relatedMovie => {
-          relatedMovie.poster_path =
-            "https://image.tmdb.org/t/p/w185" + relatedMovie.poster_path;
+          if (relatedMovie.poster_path !== null) {
+            relatedMovie.poster_path =
+              "https://image.tmdb.org/t/p/w185" + relatedMovie.poster_path;
+          } else {
+            relatedMovie.poster_path =
+              "https://www.underconsideration.com/brandnew/archives/google_broken_image_00_b_logo_detail.gif";
+          }
         });
         this.setState({ relatedMovies: relatedMovies });
       },
@@ -123,7 +133,7 @@ class WatchMovie extends Component {
     const urlString =
       "https://api.themoviedb.org/3/movie/" +
       this.props.movie.id +
-      "/images?api_key=4ccda7a34189fcea2fc752a6ee339500&language=ru-RU&include_image_language=ru,null";
+      "/images?api_key=de00ede0874461aa1c5f57086858497f&language=ru-RU&include_image_language=ru,null";
 
     $.ajax({
       url: urlString,
@@ -136,8 +146,13 @@ class WatchMovie extends Component {
           this.setState({ backgroundsTitle: "Backgrounds" });
         }
         backdrops.forEach(backdrop => {
-          backdrop.file_path =
-            "https://image.tmdb.org/t/p/w185" + backdrop.file_path;
+          if (backdrop.file_path !== null) {
+            backdrop.file_path =
+              "https://image.tmdb.org/t/p/w185" + backdrop.file_path;
+          } else {
+            backdrop.file_path =
+              "https://www.underconsideration.com/brandnew/archives/google_broken_image_00_b_logo_detail.gif";
+          }
         });
         this.setState({ backdrops: backdrops });
       },
@@ -150,7 +165,7 @@ class WatchMovie extends Component {
     const urlString =
       "https://api.themoviedb.org/3/movie/" +
       this.props.movie.id +
-      "/videos?api_key=4ccda7a34189fcea2fc752a6ee339500&language=en-US";
+      "/videos?api_key=de00ede0874461aa1c5f57086858497f&language=en-US";
 
     $.ajax({
       url: urlString,
@@ -202,11 +217,13 @@ class WatchMovie extends Component {
         <main>
           <Modal show={this.state.show} handleClose={this.hideModal}>
             <div className="modal-div1">
-              <img
-                style={{ position: "relative" }}
-                alt="poster"
-                src={this.props.movie.poster}
-              />
+              <div className="modal-img">
+                <img
+                  style={{ position: "relative" }}
+                  alt="poster"
+                  src={this.props.movie.poster}
+                />
+              </div>
               <div className="bookmark-div">
                 <button className="icon-btn">
                   <FaBookmark />
@@ -226,7 +243,9 @@ class WatchMovie extends Component {
                 {this.state.relatedMovies.map(function(movie, index) {
                   return (
                     <div className="related-movie" key={index}>
-                      <img alt="poster" src={movie.poster_path} />
+                      <div className="related-img">
+                        <img alt="poster" src={movie.poster_path} />
+                      </div>
                       <br />
                       {movie.title}
                     </div>
@@ -235,11 +254,11 @@ class WatchMovie extends Component {
               </div>
             </div>
             <div className="modal-div2">
-              <h2>
-                <strong>
-                  <span className="green-text">{this.props.movie.title}</span>
-                </strong>
-              </h2>
+              <div className="modal-title">
+                <h2>
+                  <strong>{this.props.movie.title}</strong>
+                </h2>
+              </div>
               <div>
                 <div className="detail-top">
                   <div className={this.state.detail[0].percent_class}>
@@ -315,8 +334,10 @@ class WatchMovie extends Component {
                 {this.state.cast.map(function(cast, index) {
                   return (
                     <div className="cast" key={index}>
-                      <img alt="profile" src={cast.profile_path} />
-                      <br />
+                      <div className="cast-profile">
+                        <img alt="profile" src={cast.profile_path} />
+                        <br />
+                      </div>
                       {cast.name}
                       <br />
                       <span className="green-text">{cast.character}</span>
@@ -354,19 +375,20 @@ class WatchMovie extends Component {
             </TrailerModal>
           </Modal>
 
-          <div className="poster">
-            <div className="movie-poster">
-              <img
-                id={this.props.movie.id}
-                onClick={this.showModal}
-                alt="poster"
-                src={this.props.movie.poster}
-              />
-            </div>
+          <div className="poster-container" id={this.props.movie.id}>
+            <div
+              className="poster"
+              id={this.props.movie.id}
+              onClick={this.showModal}
+            >
+              <div className="movie-poster">
+                <img alt="poster" src={this.props.movie.poster} />
+              </div>
 
-            <div className="hoverText">
-              <strong>{this.props.movie.title}</strong>
-              <p>{this.props.movie.overview}</p>
+              <div className="hoverText">
+                <strong>{this.props.movie.title}</strong>
+                <p>{this.props.movie.overview}</p>
+              </div>
             </div>
           </div>
 
@@ -419,7 +441,7 @@ const Modal = ({ handleClose, show, children }) => {
       <div className="modal-main">
         <button className="back-btn" onClick={handleClose}>
           <FaChevronCircleLeft />
-          Back to all movie
+          Back to watchlist
         </button>
         <br />
         {children}

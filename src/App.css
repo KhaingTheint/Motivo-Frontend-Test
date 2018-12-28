@@ -1,11 +1,10 @@
 /* header */
 .title-box {
-  /* display: block; */
   color: #fff;
-  font-size: 26px;
+  font-size: 20px;
   padding-left: 25px;
   padding-top: 30px;
-  width: 120px;
+  width: 125px;
   text-align: left;
 }
 
@@ -65,7 +64,6 @@
   color: #fff;
   font-style: bold;
   background: transparent;
-  /* border: none; */
   border-color: aqua;
   border-radius: 7%;
   margin: 5px;

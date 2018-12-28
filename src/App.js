@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import "./FontStyle.css";
-import { FaSistrix } from "react-icons/fa";
+//import { FaSistrix } from "react-icons/fa";
 
 import MovieBox from "./components/MovieBox.js";
 
@@ -26,7 +26,7 @@ class App extends Component {
       const urlString =
         "https://api.themoviedb.org/3/movie/" +
         searchTerm +
-        "?api_key=4ccda7a34189fcea2fc752a6ee339500&language=en-US&page=" +
+        "?api_key=de00ede0874461aa1c5f57086858497f&language=en-US&page=" +
         i;
 
       $.ajax({
@@ -55,7 +55,7 @@ class App extends Component {
   // search movies by input keyword
   performSearch(searchTerm) {
     const urlString =
-      "https://api.themoviedb.org/3/search/movie?api_key=4ccda7a34189fcea2fc752a6ee339500&query=" +
+      "https://api.themoviedb.org/3/search/movie?api_key=de00ede0874461aa1c5f57086858497f&query=" +
       searchTerm;
 
     $.ajax({
@@ -64,7 +64,13 @@ class App extends Component {
         const results = searchResults.results;
         var movieBoxes = [];
         results.forEach(movie => {
-          movie.poster = "https://image.tmdb.org/t/p/w185" + movie.poster_path;
+          if (movie.poster_path !== null) {
+            movie.poster =
+              "https://image.tmdb.org/t/p/w185" + movie.poster_path;
+          } else {
+            movie.poster =
+              "https://www.underconsideration.com/brandnew/archives/google_broken_image_00_b_logo_detail.gif";
+          }
           var date = movie.release_date.split("-");
           movie.release_date = date[0];
           const movieBox = <MovieBox key={movie.id} movie={movie} />;
@@ -114,7 +120,7 @@ class App extends Component {
             color: "white"
           }}
           onChange={this.searchChangeHandler.bind(this)}
-          placeholder={<FaSistrix />}
+          //placeholders={<FaSistrix />}
           placeholder="Search..."
         />
         <div className="button-div">
