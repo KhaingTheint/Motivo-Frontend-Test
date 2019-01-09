@@ -40,6 +40,9 @@ class MovieBox extends Component {
   }
   // add the movie to watchlist
   addToWatchList(id) {
+    this.setState({
+      color: "yellow"
+    });
     var watchMovies;
     watchMovies = {
       id: id,
@@ -269,9 +272,9 @@ class MovieBox extends Component {
                   id={this.props.movie.id}
                   onClick={this.handleAdd.bind(this)}
                 >
-                  <FaStar />
+                <span style={{color:this.state.color}}><FaStar /></span>
                 </button>{" "}
-                add to watchList
+                Add to watchList
               </div>
 
               <div className="related-div">
@@ -468,7 +471,7 @@ const Modal = ({ handleClose, show, children }) => {
       <div className="modal-main">
         <button className="back-btn" onClick={handleClose}>
           <FaChevronCircleLeft />
-          Back to all movies
+           Back To All Movies
         </button>
         {children}
       </div>
